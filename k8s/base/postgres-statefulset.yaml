@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: postgres:14
+          image: harbor.emea.ocp.int.kn/dockerhub/library/postgres:14
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5432
           env:
