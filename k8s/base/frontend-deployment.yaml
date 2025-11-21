@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hcm-frontend
+  namespace: hcm
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hcm-frontend
+  template:
+    metadata:
+      labels:
+        app: hcm-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: hcm-frontend:1.0  # zamień na registry np. ghcr.io/user/hcm-frontend:1.0
+          ports:
+            - containerPort: 80
