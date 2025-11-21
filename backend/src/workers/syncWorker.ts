@@ -1,8 +1,9 @@
 import { prisma } from "../prismaClient";
-import cron from "cron";
+import { CronJob } from "cron";
 
 export function startSyncWorker() {
-  const job = new cron.CronJob("*/1 * * * *", async () => {
+  // Cron format: every 1 minute
+  const job = new CronJob("*/1 * * * *", async () => {
     console.log("🔄 Sync job running…");
 
     const randomEmployees = await prisma.employee.findMany({
