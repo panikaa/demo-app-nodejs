@@ -32,6 +32,7 @@ WORKDIR /app
 RUN apt install libssl1.1
 
 COPY package*.json ./
+COPY .env.example .env
 RUN npm install --omit=dev
 
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0

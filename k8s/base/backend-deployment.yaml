@@ -16,6 +16,7 @@ spec:
       containers:
         - name: backend
           image: hcm-backend:1.0   # zamień na registry np. ghcr.io/user/hcm-backend:1.0
+          command: ["sh", "-c", "npx prisma migrate deploy"]
           ports:
             - containerPort: 3000
           env:
