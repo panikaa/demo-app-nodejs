@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { API } from "./api.js";
 
 export default function EmployeeDetails({ id, goBack }) {
   const [emp, setEmp] = useState(null);
 
   const load = () =>
-    fetch(`/employees/${id}`).then(r => r.json()).then(setEmp);
+    fetch(`${API}/employees/${id}`).then(r => r.json()).then(setEmp);
 
   useEffect(() => {
     load();

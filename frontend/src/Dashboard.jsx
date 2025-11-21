@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { API } from "./api.js";
 
 export default function Dashboard() {
   const [system, setSystem] = useState(null);
 
   useEffect(() => {
-    fetch("/system")
+    fetch(`${API}/system`)
       .then(r => r.json())
       .then(setSystem);
   }, []);

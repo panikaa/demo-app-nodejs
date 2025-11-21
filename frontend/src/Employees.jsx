@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import EmployeeDetails from "./EmployeeDetails";
+import { API } from "./api.js";
 
 export default function Employees() {
   const [list, setList] = useState([]);
@@ -8,7 +9,7 @@ export default function Employees() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    fetch(`/employees?page=${page}`)
+    fetch(`${API}/employees?page=${page}`)
       .then(r => r.json())
       .then(data => setList(data));
   }, [page]);
