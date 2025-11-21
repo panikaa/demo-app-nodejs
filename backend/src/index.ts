@@ -10,11 +10,11 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.use("/employees", employeesRouter);
-app.use("/system", systemRouter);
-app.use("/metrics", metricsRouter);
+app.use("/api/employees", employeesRouter);
+app.use("/api/system", systemRouter);
+app.use("/api/metrics", metricsRouter);
 
-app.get("/health", (_, res) => res.json({ status: "ok" }));
+app.get("/api/health", (_, res) => res.json({ status: "ok" }));
 
 generateInitialData().then(() => {
   startSyncWorker();

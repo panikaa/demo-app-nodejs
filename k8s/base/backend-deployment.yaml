@@ -16,7 +16,7 @@ spec:
       containers:
         - name: backend
           image: hcm-backend:1.0   # zamień na registry np. ghcr.io/user/hcm-backend:1.0
-          command: ["sh", "-c", "npx prisma migrate deploy"]
+          command: ["sh", "-c", "npx prisma migrate deploy && npm start"]
           ports:
             - containerPort: 3000
           env:
@@ -34,13 +34,13 @@ spec:
                   key: APP_VERSION
           readinessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 3000
             initialDelaySeconds: 10
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /health
+              path: /api/health
               port: 3000
             initialDelaySeconds: 15
             periodSeconds: 5
