@@ -1,22 +1,22 @@
 import express from "express";
-import os from "os";
-import { router } from "./routes";
-import { metricsRouter, register } from "./metrics";
+import { employeesRouter } from "./routes/employees";
+import { systemRouter } from "./routes/system";
+import { metricsRouter } from "./metrics";
+import { generateInitialData } from "./workers/feedGenerator";
+import { startSyncWorker } from "./workers/syncWorker";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Routes
-app.use("/", router);
+app.use("/employees", employeesRouter);
+app.use("/system", systemRouter);
 app.use("/metrics", metricsRouter);
 
-// Healthcheck for Kubernetes
-app.get("/health", (_req, res) => {
-  res.json({ status: "ok" });
-});
+app.get("/health", (_, res) => res.json({ status: "ok" }));
 
-app.listen(port, () => {
-  console.log(`API running on port ${port}, hostname: ${os.hostname()}`);
+generateInitialData().then(() => {
+  startSyncWorker();
+  app.listen(port, () => console.log("API running on port", port));
 });

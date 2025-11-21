@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    container_name: demo-backend
+    ports:
+      - "3000:3000"
+    environment:
+      APP_ENV: "local"
+      APP_VERSION: "compose-1.0"
+    volumes:
+      - ./backend:/app
+    command: npm run dev
