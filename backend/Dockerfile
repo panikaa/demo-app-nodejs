@@ -1,7 +1,7 @@
 # -------------------------------
 # Stage 1: Build
 # -------------------------------
-FROM harbor.emea.ocp.int.kn/dockerhub/node:18-alpine AS build
+FROM docker.io/node:18-alpine AS build
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN npm run build
 # -------------------------------
 # Stage 2: Production Image
 # -------------------------------
-FROM harbor.emea.ocp.int.kn/dockerhub/node:18-alpine
+FROM docker.io/node:18-alpine
 
 WORKDIR /app
 
