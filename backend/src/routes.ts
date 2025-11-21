@@ -1,5 +1,6 @@
 import express from "express";
 import os from "os";
+import { getKubernetesStatus } from "./k8s";
 
 export const router = express.Router();
 
@@ -8,7 +9,8 @@ router.get("/info", (_req, res) => {
     app: "demo-app",
     version: process.env.APP_VERSION || "dev",
     hostname: os.hostname(),
-    environment: process.env.APP_ENV || "local"
+    environment: process.env.APP_ENV || "local",
+    kubernetes: getKubernetesStatus()
   });
 });
 
