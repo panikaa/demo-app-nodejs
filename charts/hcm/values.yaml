@@ -1,0 +1,40 @@
+namespace: hcm
+
+backend:
+  image: "hcm-backend:1.0"
+  replicaCount: 1
+  port: 3000
+  env:
+    DATABASE_URL: "postgresql://postgres:postgres@hcm-postgres:5432/hcm"
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+
+frontend:
+  image: "hcm-frontend:1.0"
+  replicaCount: 1
+  port: 80
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+
+ingress:
+  enabled: true
+  host: "tailon.suramar.int"
+  path: "/"
+
+postgres:
+  enabled: true
+  image: "postgres:14"
+  username: "postgres"
+  password: "postgres"
+  dbname: "hcm"
+  storage: "1Gi"
