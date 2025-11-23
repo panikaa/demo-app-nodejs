@@ -69,6 +69,8 @@ This application is used for:
 
 ## 📦 Project Structure
 
+---
+
 demo-app-nodejs/
 backend/
 src/
