@@ -1,7 +1,7 @@
 # -------------------------------
 # Stage 1: Build
 # -------------------------------
-FROM harbor.emea.ocp.int.kn/dockerhub/node:20-bullseye-slim AS build
+FROM node:20-bullseye-slim AS build
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ RUN npm run build
 # -------------------------------
 # Stage 2: Production Image
 # -------------------------------
-FROM harbor.emea.ocp.int.kn/dockerhub/node:20-bullseye-slim
+FROM node:20-bullseye-slim
 
 WORKDIR /app
 

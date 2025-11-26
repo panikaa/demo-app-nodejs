@@ -1,7 +1,7 @@
 # -----------------------------
 # Stage 1 - Build
 # -----------------------------
-FROM harbor.emea.ocp.int.kn/dockerhub/node:18-alpine AS build
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN npm run build
 # -----------------------------
 # Stage 2 - Nginx production
 # -----------------------------
-FROM harbor.emea.ocp.int.kn/dockerhub/nginx:alpine
+FROM nginx:alpine
 
 
 # Remove default configuration
