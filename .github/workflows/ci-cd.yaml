@@ -1,0 +1,90 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_BACKEND: ghcr.io/${{ github.repository_owner }}/hcm-backend
+  IMAGE_FRONTEND: ghcr.io/${{ github.repository_owner }}/hcm-frontend
+  GITOPS_REPO: git@github.com:${{ github.repository_owner }}/gitops-cluster-config.git
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    # BACKEND BUILD
+    - name: Install backend deps
+      run: |
+        cd backend
+        npm ci
+        npx prisma generate
+
+    - name: Build backend Docker image
+      run: |
+        docker build -t $IMAGE_BACKEND:${{ github.sha }} ./backend
+
+    # FRONTEND BUILD
+    - name: Install frontend deps
+      run: |
+        cd frontend
+        npm ci
+        npm run build
+
+    - name: Build frontend image
+      run: |
+        docker build -t $IMAGE_FRONTEND:${{ github.sha }} ./frontend
+
+    # LOGIN TO GHCR
+    - name: Login to GHCR
+      run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.repository_owner }} --password-stdin
+
+    # PUSH IMAGES
+    - name: Push backend image
+      run: |
+        docker push $IMAGE_BACKEND:${{ github.sha }}
+
+    - name: Push frontend image
+      run: |
+        docker push $IMAGE_FRONTEND:${{ github.sha }}
+
+  update-gitops:
+    needs: [build]
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout gitops repo
+      uses: actions/checkout@v3
+      with:
+        repository: ${{ github.repository_owner }}/gitops-cluster-config
+        ssh-key: ${{ secrets.GITOPS_SSH_KEY }}
+
+    - name: Update backend image tag
+      run: |
+        sed -i "s|image: .*/hcm-backend:.*|image: $IMAGE_BACKEND:${{ github.sha }}|" apps/hcm/base/backend-deployment.yaml
+
+    - name: Update frontend image tag
+      run: |
+        sed -i "s|image: .*/hcm-frontend:.*|image: $IMAGE_FRONTEND:${{ github.sha }}|" apps/hcm/base/frontend-deployment.yaml
+
+    - name: Commit and push
+      run: |
+        git config --global user.email "ci@github.com"
+        git config --global user.name "GitHub CI"
+        git add .
+        git commit -m "Update images to ${{ github.sha }}"
+        git push
+
+    - name: Done
+      run: echo "GitOps updated, ArgoCD will sync automatically!"
