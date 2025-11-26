@@ -78,13 +78,13 @@ jobs:
       run: |
         sed -i "s|image: .*/hcm-frontend:.*|image: $IMAGE_FRONTEND:${{ github.sha }}|" apps/hcm/base/frontend-deployment.yaml
 
-    - name: Commit and push
+    - name: Push GitOps changes
       run: |
-        git config --global user.email "ci@github.com"
-        git config --global user.name "GitHub CI"
+        git config user.name "ci"
+        git config user.email "ci@github.com"
         git add .
-        git commit -m "Update images to ${{ github.sha }}"
-        git push
+        git commit -m "Update images"
+        git push https://x-access-token:${{ secrets.GITOPS_PAT }}@github.com/panikaa/gitops-cluster-config.git
 
     - name: Done
       run: echo "GitOps updated, ArgoCD will sync automatically!"
