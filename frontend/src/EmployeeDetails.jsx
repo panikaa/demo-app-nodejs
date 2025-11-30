@@ -1,63 +1,43 @@
 import { useEffect, useState } from "react";
-import { API } from "./api.js";
+import { API } from "./api";
 
 export default function EmployeeDetails({ id, goBack }) {
   const [emp, setEmp] = useState(null);
 
-  const load = () =>
-    fetch(`${API}/employees/${id}`).then(r => r.json()).then(setEmp);
-
   useEffect(() => {
-    load();
-    const i = setInterval(load, 5000);
-    return () => clearInterval(i);
+    fetch(`${API}/employees/${id}`)
+      .then(r => r.json())
+      .then(setEmp);
   }, [id]);
 
   if (!emp) return "Loading…";
 
   return (
-    <div style={styles.card}>
-      <button onClick={goBack} style={styles.back}>← Back</button>
+    <div style={{ padding: 20, background: "#fff" }}>
+      <button onClick={goBack}>← Back</button>
 
       <h2>{emp.firstName} {emp.lastName}</h2>
+      <p>Email: {emp.email}</p>
+      <p>Department: {emp.department?.name}</p>
+      <p>Position: {emp.position}</p>
+      <p>Salary: {emp.salary}</p>
+      <p>Hire date: {new Date(emp.hireDate).toLocaleDateString()}</p>
 
-      <p><b>Department:</b> {emp.department?.name}</p>
-      <p><b>Position:</b> {emp.position}</p>
-      <p><b>Salary:</b> €{emp.salary}</p>
-      <p><b>Skills:</b> {emp.skills.join(", ")}</p>
-
-      <h3>Recent Compensation</h3>
+      <h3>Compensation</h3>
       <ul>
         {emp.compensation.map(c => (
-          <li key={c.id}>
-            {new Date(c.date).toLocaleDateString()} — €{c.amount}
-          </li>
+          <li key={c.id}>{new Date(c.date).toLocaleDateString()} — €{c.amount}</li>
         ))}
       </ul>
 
-      <h3>Performance Reviews</h3>
+      <h3>Reviews</h3>
       <ul>
-        {emp.reviews.length === 0 ? (
-          <li>No reviews yet</li>
-        ) : emp.reviews.map(r => (
+        {emp.reviews.map(r => (
           <li key={r.id}>
-            {r.date.substring(0, 10)} – Score {r.score}/10  
-            <br />“{r.comment}”
+            {new Date(r.date).toLocaleDateString()} — score {r.score} — {r.comment}
           </li>
         ))}
       </ul>
     </div>
   );
 }
-
-const styles = {
-  card: {
-    padding: 20,
-    background: "#fff",
-    borderRadius: 8,
-    boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-  },
-  back: {
-    marginBottom: 10
-  }
-};
