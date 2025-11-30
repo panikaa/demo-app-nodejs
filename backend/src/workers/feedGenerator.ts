@@ -4,7 +4,7 @@ export async function generateInitialData() {
   const exists = await prisma.employee.count();
   if (exists > 0) return;
 
-  console.log("🚀 Generating 50k employees…");
+  console.log("🚀 Generating 5k employees…");
 
   const departments = ["Engineering", "HR", "Finance", "Marketing", "Sales"];
   for (let i = 0; i < departments.length; i++) {
@@ -16,7 +16,7 @@ export async function generateInitialData() {
   const deptList = await prisma.department.findMany();
 
   const batch = [];
-  for (let i = 1; i <= 50000; i++) {
+  for (let i = 1; i <= 5000; i++) {
     const d = deptList[Math.floor(Math.random() * deptList.length)];
 
     batch.push({
