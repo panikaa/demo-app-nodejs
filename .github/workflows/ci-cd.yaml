@@ -34,7 +34,14 @@ jobs:
     - name: Build backend Docker image
       run: |
         docker build -t $IMAGE_BACKEND:${{ github.sha }} ./backend
-
+        
+    - name: Scan Backend image with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: $IMAGE_BACKEND:${{ github.sha }}
+        severity: HIGH,CRITICAL
+        exit-code: 1
+        
     # FRONTEND BUILD
     - name: Install frontend deps
       run: |
@@ -45,6 +52,13 @@ jobs:
     - name: Build frontend image
       run: |
         docker build -t $IMAGE_FRONTEND:${{ github.sha }} ./frontend
+        
+    - name: Scan Frontend image with Trivy
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: $IMAGE_FRONTEND:${{ github.sha }}
+        severity: HIGH,CRITICAL
+        exit-code: 1
 
     # LOGIN TO GHCR
     - name: Login to GHCR
