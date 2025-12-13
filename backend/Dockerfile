@@ -5,6 +5,7 @@ FROM node:20-bookworm-slim AS build
 
 WORKDIR /app
 
+RUN apt update
 RUN apt install libssl3
 
 COPY package*.json ./
@@ -29,6 +30,7 @@ FROM node:20-bookworm-slim
 
 WORKDIR /app
 
+RUN apt update
 RUN apt install libssl3
 
 COPY package*.json ./
