@@ -5,7 +5,7 @@ FROM node:20-bookworm-slim AS build
 
 WORKDIR /app
 
-RUN apt install libssl1.1
+RUN apt install libssl3
 
 COPY package*.json ./
 RUN npm install
@@ -29,7 +29,7 @@ FROM node:20-bookworm-slim
 
 WORKDIR /app
 
-RUN apt install libssl1.1
+RUN apt install libssl3
 
 COPY package*.json ./
 COPY .env.example .env
