@@ -1,11 +1,12 @@
 # -------------------------------
 # Stage 1: Build
 # -------------------------------
-FROM node:20-bookworm-slim AS build
+FROM node:25-trixie-slim AS build
 
 WORKDIR /app
 
 RUN apt update
+RUN apt upgrade
 RUN apt install libssl3
 
 COPY package*.json ./
@@ -26,11 +27,12 @@ RUN npm run build
 # -------------------------------
 # Stage 2: Production Image
 # -------------------------------
-FROM node:20-bookworm-slim
+FROM node:25-trixie-slim
 
 WORKDIR /app
 
 RUN apt update
+RUN apt upgrade
 RUN apt install libssl3
 
 COPY package*.json ./
@@ -44,6 +46,8 @@ RUN npx prisma generate
 
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
+
+RUN npm r -g npm # removing due to https://medium.com/@balazs.csaba.diy/whats-this-glob-npm-madness-suddenly-every-node-js-image-is-vulnerable-but-why-1ba1b0cbad97
 
 ENV PORT=3000
 

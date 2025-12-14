@@ -1,9 +1,12 @@
 # -----------------------------
 # Stage 1 - Build
 # -----------------------------
-FROM node:18-alpine AS build
+FROM node:25-alpine AS build
 
 WORKDIR /app
+
+RUN apt update
+RUN apt upgrade
 
 COPY package*.json ./
 RUN npm install
