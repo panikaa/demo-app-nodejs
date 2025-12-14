@@ -5,9 +5,6 @@ FROM node:25-alpine AS build
 
 WORKDIR /app
 
-RUN apt update
-RUN apt upgrade
-
 COPY package*.json ./
 RUN npm install
 
@@ -19,7 +16,6 @@ RUN npm run build
 # Stage 2 - Nginx production
 # -----------------------------
 FROM nginx:alpine
-
 
 # Remove default configuration
 RUN rm -rf /usr/share/nginx/html/*
